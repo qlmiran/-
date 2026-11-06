@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fbf5ec" />
+    <meta name="description" content="Персональный игровой тренажёр французского языка." />
+    <title>Bonjour! — французский каждый день</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20261106-2" />
+    <script src="app.js?v=20261106-2" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#home" aria-label="На главную">
+          <span class="brand-mark" aria-hidden="true">b.</span>
+          <span>bonjour<span class="brand-dot">!</span></span>
+        </a>
+        <div class="topbar-actions">
+          <button class="music-toggle" id="music-toggle" type="button" aria-pressed="false" aria-label="Включить фоновую музыку"><span aria-hidden="true">♫</span><span id="music-label">Музыка: выкл.</span></button>
+          <div class="streak-pill" title="Дни занятий подряд"><span aria-hidden="true">🔥</span><b id="streak-count">0</b><span class="streak-label" id="streak-label">дней</span></div>
+          <button class="avatar-button" id="open-profile" aria-label="Открыть профиль"><span id="avatar-initial">✿</span></button>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <section class="view active" id="view-home" aria-labelledby="home-title">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <p class="eyebrow"><span class="eyebrow-star">✦</span> ТВОЯ ФРАНЦУЗСКАЯ ПРАКТИКА</p>
+              <h1 id="home-title">Bonjour,<br /><span id="welcome-name">будущая полиглотка</span><span class="title-sparkle">✦</span></h1>
+              <p class="hero-subtitle">Понемногу каждый день — и однажды ты заговоришь свободно.</p>
+              <div class="hero-actions">
+                <button class="button button-primary" data-go="learn">Продолжить урок <span aria-hidden="true">→</span></button>
+                <span class="time-note"><span aria-hidden="true">◷</span> <span id="session-duration">20 минут</span></span>
+              </div>
+            </div>
+            <div class="hero-art" aria-label="Иллюстрация Эйфелевой башни и цветов" role="img">
+              <div class="art-sun"></div>
+              <div class="art-blob blob-one"></div><div class="art-blob blob-two"></div>
+              <div class="art-ticket"><span>PARIS</span><b>je peux<br />le faire !</b><small>я смогу!</small></div>
+              <div class="art-tower" aria-hidden="true"><i></i><i></i><i></i><i></i><span></span></div>
+              <span class="art-flower flower-a">✿</span><span class="art-flower flower-b">✽</span>
+              <span class="art-scribble">bon courage</span>
+            </div>
+          </div>
+
+          <div class="dashboard-row">
+            <article class="panel today-panel">
+              <div class="panel-heading"><div><p class="eyebrow">ТВОЙ ПЛАН НА СЕГОДНЯ</p><h2>Маленький шаг — большой прогресс</h2></div><span class="sunny-icon">☀</span></div>
+              <div class="daily-plan">
+                <div class="plan-item"><span class="plan-icon peach">♫</span><div><b>Послушай диалог</b><small>3 минуты · знакомство</small></div><span class="plan-check" id="listen-check">○</span></div>
+                <div class="plan-item"><span class="plan-icon lilac">▤</span><div><b>Собери свои фразы</b><small>5 минут · строим предложения</small></div><span class="plan-check" id="build-check">○</span></div>
+                <div class="plan-item"><span class="plan-icon lemon">◉</span><div><b>Скажи вслух</b><small>5 минут · тренируем произношение</small></div><span class="plan-check" id="speak-check">○</span></div>
+              </div>
+              <button class="text-button" data-go="practice">Открыть практику <span aria-hidden="true">↗</span></button>
+            </article>
+
+            <article class="panel quote-panel">
+              <div class="quote-top"><span class="quote-mark">“</span><span class="quote-tag">МЫСЛЬ ДНЯ</span></div>
+              <blockquote id="quote-text">Каждое новое слово приближает тебя к разговору, о котором ты мечтаешь.</blockquote>
+              <p class="quote-translation" id="quote-translation">Chaque nouveau mot te rapproche de la conversation dont tu rêves.</p>
+              <div class="quote-author"><span class="author-line"></span><span id="quote-author">Мысль Bonjour!</span></div>
+              <span class="quote-doodle" aria-hidden="true">✧</span>
+            </article>
+          </div>
+
+          <section class="section-block">
+            <div class="section-heading"><div><p class="eyebrow">ТВОЁ ДВИЖЕНИЕ ВПЕРЁД</p><h2>Уже есть прогресс</h2></div><button class="text-button" data-go="progress">Вся статистика <span aria-hidden="true">→</span></button></div>
+            <div class="progress-strip panel">
+              <div class="level-badge"><span>ТВОЯ ЦЕЛЬ</span><strong>A1 <i>→</i> A2</strong><small>Уверенный старт</small></div>
+              <div class="overall-progress"><div class="progress-copy"><span>Стартовый модуль</span><b id="overall-percent">0%</b></div><div class="progress-track"><span id="overall-bar"></span></div><small id="lesson-count">Начни первый урок — прогресс сохранится здесь</small></div>
+              <div class="week-goal"><div class="goal-ring"><span id="goal-count">0/4</span></div><div><b>учебных дня на этой неделе</b><small>Твой личный челлендж</small></div></div>
+            </div>
+          </section>
+
+          <section class="section-block interest-section">
+            <div class="section-heading"><div><p class="eyebrow">УЧИСЬ ЧЕРЕЗ ТО, ЧТО ТЕБЕ НРАВИТСЯ</p><h2>Французский в твоём мире</h2></div></div>
+            <div class="interest-chips"><span>🎬 Кино</span><span>👗 Мода</span><span>🎵 Музыка</span><span>✈️ Путешествия</span><span>📸 Контент</span><span>🤝 Общение</span></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-learn" aria-labelledby="learn-title">
+          <div class="page-intro"><p class="eyebrow">ТВОЙ МАРШРУТ</p><h1 id="learn-title">Уроки <span class="title-sparkle">✦</span></h1><p>Выбирай следующий урок сразу после предыдущего — дневного лимита нет. Можно заниматься 20 минут или продолжать столько, сколько хочется.</p></div>
+          <div class="level-banner"><div class="level-banner-icon">01</div><div><span class="eyebrow">УРОВЕНЬ A1 · СТАРТ</span><h2>Первые разговоры</h2><p>Знакомься, задавай вопросы и рассказывай о себе.</p></div><div class="level-banner-progress"><b id="learn-level-percent">0%</b><span>пройдено</span></div></div>
+          <div class="lesson-list" id="lesson-list"></div>
+          <section class="panel course-roadmap">
+            <div class="section-heading"><div><p class="eyebrow">ГИБКИЙ МАРШРУТ</p><h2>От первых фраз к A2</h2></div><span class="roadmap-badge">без календарных замков</span></div>
+            <p class="course-roadmap-intro">Эти шесть уроков — стартовый модуль, а не обещание готового уровня A1. Продолжай в своём темпе: уроки доступны сразу, а процент показывает пройденные занятия.</p>
+            <div class="course-levels">
+              <div class="course-level"><b><span>1</span> A1 · базовое общение</b><p>Произношение и знакомство → о себе и учёбе → распорядок → кафе и покупки → город и поездки → интересы и впечатления.</p></div>
+              <div class="course-level course-level-a2"><b><span>2</span> A2 · больше самостоятельности</b><p>Прошедшие события → планы и опыт → мнения и сравнения → учёба и карьера → культура и медиа → длинные диалоги и итоговый разговор.</p></div>
+            </div>
+            <a class="text-button course-plan-link" href="course-plan.html">Открыть подробный план обучения <span aria-hidden="true">→</span></a>
+          </section>
+          <section class="panel media-panel">
+            <div class="section-heading"><div><p class="eyebrow">ФРАНЦУЗСКИЙ В ЖИВОЙ РЕЧИ</p><h2>Видео для практики и кино</h2></div><span class="media-icon">🎬</span></div>
+            <p class="media-intro">Короткие ролики для начинающих и трейлеры открываются в плеере Bonjour. Нажми на карточку, чтобы сразу запустить видео здесь.</p>
+            <div class="video-stage" id="video-stage">
+              <div class="video-stage-top"><div><span class="eyebrow">СЕАНС В BONJOUR</span><b id="video-title">Выбери первый французский ролик</b></div><button class="video-close" id="close-video" type="button" aria-label="Закрыть видео" hidden>×</button></div>
+              <div class="video-screen" id="video-screen">
+                <div class="video-poster" id="video-poster"><span class="poster-sparkle">✦</span><div class="poster-clapper"><span>BONJOUR CINÉ-CLUB</span><b>Французский<br />с субтитрами</b><small>смотри · слушай · повторяй</small></div><span class="poster-ticket">PLAY ▶</span></div>
+                <iframe id="video-frame" title="Видео на французском" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" hidden></iframe>
+              </div>
+              <p class="video-note">Видео запускается во встроенном плеере. Нужен интернет; доступность YouTube зависит от сети и региона.</p>
+            </div>
+            <div class="media-links" id="media-links">
+              <button class="media-link" type="button" data-video-id="08KdrgZVrjs" data-video-title="#LesPetitesLeçons · Приветствие"><img src="https://img.youtube.com/vi/08KdrgZVrjs/hqdefault.jpg" alt="" loading="lazy" /><b>Приветствие · Lesson 1</b><small>Первые слова при знакомстве · A1.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="HJBe1u2F1sk" data-video-title="#LesPetitesLeçons · Мужской и женский род"><img src="https://img.youtube.com/vi/HJBe1u2F1sk/hqdefault.jpg" alt="" loading="lazy" /><b>Мужской и женский род · Lesson 2</b><small>Знакомство с родом французских слов · A1.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="zKazQG-7tww" data-video-title="#LesPetitesLeçons · Как сказать, чего хочешь"><img src="https://img.youtube.com/vi/zKazQG-7tww/hqdefault.jpg" alt="" loading="lazy" /><b>Как попросить что-то · Lesson 3</b><small>Фразы для кафе, покупок и повседневных ситуаций · A1.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="x5zzVwCx2vk" data-video-title="#LesPetitesLeçons · Французское произношение"><img src="https://img.youtube.com/vi/x5zzVwCx2vk/hqdefault.jpg" alt="" loading="lazy" /><b>Семь советов по произношению · Lesson 5</b><small>Слушай звуки и пробуй повторять вместе с ведущей.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="_d9MopMB8Fo" data-video-title="#LesPetitesLeçons · Разговор о работе"><img src="https://img.youtube.com/vi/_d9MopMB8Fo/hqdefault.jpg" alt="" loading="lazy" /><b>Разговор о работе · Lesson 7</b><small>Полезные слова для учёбы и будущей карьеры.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="tHgmZGLe35s" data-video-title="#LesPetitesLeçons · Заказ в кафе"><img src="https://img.youtube.com/vi/tHgmZGLe35s/hqdefault.jpg" alt="" loading="lazy" /><b>Заказ в кафе · Lesson 9</b><small>Вежливый заказ и фразы, которые пригодятся в поездке.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="_yDAAnaMV1I" data-video-title="#LesPetitesLeçons · Как спросить дорогу"><img src="https://img.youtube.com/vi/_yDAAnaMV1I/hqdefault.jpg" alt="" loading="lazy" /><b>Как спросить дорогу · Lesson 12</b><small>Ориентируемся в городе и понимаем простые указания.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+              <button class="media-link" type="button" data-video-id="jTnqaOsozxw" data-video-title="Le Petit Nicolas · официальный трейлер"><img src="https://img.youtube.com/vi/jTnqaOsozxw/hqdefault.jpg" alt="" loading="lazy" /><b>Le Petit Nicolas · трейлер</b><small>Фильм о школе, друзьях и семье. Лови знакомые короткие фразы.</small><i>Смотреть здесь <span aria-hidden="true">▶</span></i></button>
+            </div>
+            <div class="photo-stories">
+              <div class="photo-stories-heading"><div><p class="eyebrow">CARNET DE VOYAGE</p><h3>Немного французского настроения</h3></div><span aria-hidden="true">✧</span></div>
+              <div class="photo-grid">
+                <figure class="photo-card photo-paris"><img src="https://images.unsplash.com/photo-1637851059744-d3446faa60f4?auto=format&amp;fit=crop&amp;w=1000&amp;q=82" alt="Вечерний Париж и Эйфелева башня" loading="lazy" decoding="async" /><figcaption><b>Paris au coucher du soleil</b><small>Париж на закате</small></figcaption></figure>
+                <figure class="photo-card photo-cafe"><img src="https://images.unsplash.com/photo-1774084930616-fce8eba59264?auto=format&amp;fit=crop&amp;w=1000&amp;q=82" alt="Уютное парижское кафе на мощёной улице" loading="lazy" decoding="async" /><figcaption><b>Un café à Paris</b><small>Кафе и неспешный разговор</small></figcaption></figure>
+                <figure class="photo-card photo-cinema"><img src="https://images.unsplash.com/photo-1764689668473-b834a1a575e7?auto=format&amp;fit=crop&amp;w=1000&amp;q=82" alt="Винтажный кинопроектор" loading="lazy" decoding="async" /><figcaption><b>Le cinéma</b><small>Кино, истории и новые слова</small></figcaption></figure>
+              </div>
+              <p class="photo-credit">Фотографии: Unsplash.</p>
+            </div>
+            <div class="film-recommendations"><div class="film-rec-heading"><span class="eyebrow">ЧТО ПОСМОТРЕТЬ ДАЛЬШЕ</span><small>уровни — примерный учебный ориентир</small></div><div class="film-rec-grid">
+              <article class="film-rec-card film-rec-pink"><span>🍲</span><div><b>Ratatouille</b><small>A2 · кафе, еда, мечта о профессии</small><p>Сначала смотри знакомую сцену с французскими субтитрами, затем перескажи её двумя фразами.</p></div></article>
+              <article class="film-rec-card film-rec-yellow"><span>🎒</span><div><b>Le Petit Nicolas</b><small>A2 · школа, друзья, повседневные истории</small><p>Хорошо подходит для коротких смешных сцен и разговорных выражений.</p></div></article>
+              <article class="film-rec-card film-rec-purple"><span>🎤</span><div><b>Les Choristes</b><small>A2–B1 · музыка, школа, чувства</small><p>Выбери одну песню или спокойный диалог и выпиши три понятные фразы.</p></div></article>
+            </div></div>
+            <div class="meme-of-the-day"><iframe id="meme-gif" title="Французский мем-разминка" loading="lazy" allow="fullscreen" src="https://giphy.com/embed/js6NXc48PocYEVb2cn"></iframe><p><b id="meme-title">Когда услышала знакомое bonjour</b><br /><em id="meme-caption">Moi quand je reconnais « bonjour » dans une conversation :</em><small id="meme-translation">Я, когда распознала «бонжур» в разговоре: уже почти переводчик 😄</small></p><button class="sound-button" data-say="Bonjour ! Je comprends un mot sur dix, mais je continue !" aria-label="Послушать фразу из мема-разминки">♫</button></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-practice" aria-labelledby="practice-title">
+          <div class="page-intro"><p class="eyebrow">СЛУШАЙ · ПОВТОРЯЙ · ГОВОРИ</p><h1 id="practice-title">Практика <span class="title-sparkle">✦</span></h1><p>Ошибки здесь — часть пути. Попробуй ещё раз, и фраза станет твоей.</p></div>
+          <div class="practice-step-head">
+            <div class="step-head-row"><button class="text-button" id="exit-practice" type="button">← К урокам</button><span class="step-counter" id="practice-step-label">ЗАДАНИЕ 1 ИЗ 4</span></div>
+            <h2 id="practice-flow-title">Знакомство без волнения</h2>
+            <div class="mission-card" id="practice-mission"><span class="mission-sticker">🎬</span><div><b>МИССИЯ · PARIS MODE</b><p></p></div><span class="mission-confetti">✦</span></div>
+            <figure class="practice-photo" id="practice-photo"><img id="practice-photo-image" src="https://images.unsplash.com/photo-1637851059744-d3446faa60f4?auto=format&amp;fit=crop&amp;w=1000&amp;q=82" alt="Вечерний Париж" loading="lazy" decoding="async" /><figcaption id="practice-photo-caption">Paris, à toi de jouer !</figcaption></figure>
+            <div class="progress-track"><span id="practice-step-fill"></span></div>
+          </div>
+          <div class="practice-grid step-mode" id="practice-grid">
+            <article class="practice-card dialogue-card">
+              <div class="practice-card-top"><span class="practice-icon coral">♫</span><span class="tag">АУДИО · A1</span></div>
+              <p class="eyebrow">МИНИ-ДИАЛОГ</p><h2 id="dialogue-title">Приятно познакомиться!</h2><p class="card-description" id="dialogue-description">Представь, что знакомишься с кем-то на творческом мероприятии в Париже.</p>
+              <div class="dialogue-lines" id="dialogue-lines"></div>
+              <button class="button button-dark full-button" id="play-dialogue">▶ Слушать диалог</button>
+              <p class="listen-progress" id="listen-progress" aria-live="polite">Послушай весь диалог до конца — тогда откроется следующее задание.</p>
+              <button class="text-button" id="mark-listen" disabled>Сначала послушай диалог</button>
+            </article>
+            <article class="practice-card speak-card">
+              <div class="practice-card-top"><span class="practice-icon purple">◉</span><span class="tag">ГОВОРЕНИЕ · A1</span></div>
+              <p class="eyebrow">ТВОЯ ОЧЕРЕДЬ</p><h2 id="speaking-task-title">Расскажи о себе</h2><p class="card-description" id="speaking-task-description">Нажми на фразу, послушай произношение, а затем повтори вслух.</p>
+              <div id="practice-phrases"></div>
+              <div class="practice-media" id="practice-media">
+                <div class="practice-media-copy"><span class="eyebrow">МИНИ-ВИДЕО К ЗАДАНИЮ</span><b id="practice-video-title">Короткий французский ролик</b><small id="practice-video-description">Смотри, слушай и замечай знакомые слова.</small></div>
+                <button class="practice-video-launch" id="practice-video-launch" type="button" aria-label="Смотреть видео в задании"><img id="practice-video-thumb" src="https://img.youtube.com/vi/08KdrgZVrjs/hqdefault.jpg" alt="" /><span aria-hidden="true">▶</span></button>
+                <iframe id="practice-video-frame" title="Видео внутри задания" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy" hidden></iframe>
+              </div>
+              <div class="roleplay-card" id="roleplay-card"><div class="roleplay-heading"><span>🎭</span><b>ВНЕЗАПНО: ТВОЯ СЦЕНА</b></div><p id="roleplay-prompt"></p><div class="roleplay-options" id="roleplay-options"></div><div class="roleplay-feedback" id="roleplay-feedback" aria-live="polite"></div></div>
+              <div class="practice-meme"><iframe id="practice-meme-gif" title="Реакция-мем для задания" loading="lazy" allow="fullscreen" src="https://giphy.com/embed/WkmIglAtM68g2a2bNl"></iframe><div><b id="practice-meme-title">Мем-пауза</b><p id="practice-meme-copy">Quand le verbe est irrégulier… encore.</p><small id="practice-meme-translation">Когда глагол опять неправильный… ну конечно 😅</small></div></div>
+              <div class="voice-controls"><button class="button button-primary" id="record-speech"><span aria-hidden="true">●</span> Попробовать сказать</button><span class="voice-hint" id="voice-hint">Микрофон включится по нажатию</span></div>
+              <button class="text-button local-record-button" id="record-local" type="button">Записать себя и прослушать</button>
+              <div class="recognition-result" id="recognition-result" aria-live="polite"></div>
+              <div class="dictation-fallback">
+                <b>Для iPhone: диктовка клавиатуры</b>
+                <small>Выбери французскую клавиатуру 🌐, нажми поле и затем микрофон на клавиатуре. Стрелками выбери любую из трёх фраз урока и сравни её целиком. Если значка нет, включи Диктовку в настройках клавиатуры. Это обходной способ, браузерный микрофон ему не нужен.</small>
+                <input id="dictation-input" class="name-input" lang="fr-FR" autocomplete="off" autocapitalize="sentences" placeholder="Нажми и произнеси фразу" />
+                <div class="dictation-target-row"><button class="dictation-nav" id="dictation-prev" type="button" aria-label="Предыдущая фраза">←</button><small class="dictation-target" id="dictation-target">Фраза для сравнения появится здесь.</small><button class="dictation-nav" id="dictation-next" type="button" aria-label="Следующая фраза">→</button></div>
+                <small class="dictation-count" id="dictation-count" aria-live="polite">Фраза 1 из 3 · проверено 0 из 3</small>
+                <button class="button button-soft dictation-check" id="check-dictation" type="button">Сравнить с образцом</button>
+                <div class="dictation-result" id="dictation-result" aria-live="polite"></div>
+              </div>
+              <button class="text-button" id="mark-speak">Я потренировалась говорить <span aria-hidden="true">✓</span></button>
+            </article>
+            <article class="practice-card quiz-card">
+              <div class="practice-card-top"><span class="practice-icon yellow">✳</span><span class="tag">КВИЗ · 2 МИНУТЫ</span></div>
+              <p class="eyebrow">СОБЕРИ ФРАЗУ</p><h2 id="quiz-title">Как сказать «Я учусь»?</h2><p class="card-description" id="quiz-description">Выбери французский вариант.</p>
+              <div class="quiz-options" id="quiz-options"></div>
+              <div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div>
+            </article>
+            <article class="practice-card words-card">
+              <div class="practice-card-top"><span class="practice-icon pink">✿</span><span class="tag">СЛОВА · ПОВТОРЕНИЕ</span></div>
+              <p class="eyebrow">КАРТОЧКИ</p><h2 id="words-title">Слова для знакомства</h2><p class="card-description" id="words-description">Нажми на карточку, чтобы увидеть перевод. Отмечай те, что уже запомнила.</p>
+              <div class="flashcard" id="flashcard" role="button" tabindex="0" aria-label="Показать перевод слова"><span class="flashcard-label">ФРАНЦУЗСКИЙ</span><strong id="flashcard-word">Bonjour</strong><span class="flashcard-tap">Нажми, чтобы перевернуть ↻</span><span class="flashcard-translation" id="flashcard-translation">Здравствуйте · Добрый день</span></div>
+              <div class="flashcard-controls"><button class="button button-soft" id="word-hard">Повторить</button><button class="button button-primary" id="word-known">Запомнила ✓</button></div>
+              <div class="flashcard-count"><span id="word-index">1</span> из <span id="word-total">8</span> слов · запомнено <span id="known-count">0</span></div>
+              <button class="text-button add-word-button" id="add-vocab">＋ Добавить слово с занятия</button>
+            </article>
+          </div>
+          <div class="step-controls"><button class="button button-soft" id="step-back" type="button">Назад</button><button class="button button-primary" id="step-next" type="button">Дальше <span aria-hidden="true">→</span></button></div>
+        </section>
+
+        <section class="view" id="view-progress" aria-labelledby="progress-title">
+          <div class="page-intro"><p class="eyebrow">ТЫ УЖЕ ПРОДВИНУЛАСЬ</p><h1 id="progress-title">Мой прогресс <span class="title-sparkle">✦</span></h1><p>Смотри, что уже получается, и выбирай следующий маленький шаг.</p></div>
+          <div class="progress-summary-grid">
+            <article class="summary-card summary-main"><span class="summary-label">ТВОЙ ТЕКУЩИЙ ПУТЬ</span><div class="big-percent" id="progress-big-percent">0<span>%</span></div><div class="progress-track"><span id="progress-main-bar"></span></div><div class="summary-foot"><span>Начало A1</span><span>Цель — A2</span></div></article>
+            <article class="summary-card summary-streak"><span class="streak-emoji">🔥</span><span class="summary-label">ЛИЧНАЯ СЕРИЯ</span><b id="progress-streak">1 день</b><small>Каждая короткая практика важна</small></article>
+          </div>
+          <section class="panel skills-panel"><div class="section-heading"><div><p class="eyebrow">ТВОИ НАВЫКИ</p><h2>Сильные стороны и точки роста</h2></div><span class="skill-note">Ориентир по выполненным упражнениям</span></div><div class="skill-list" id="skill-list"></div></section>
+          <section class="panel roadmap-panel"><div><p class="eyebrow">ТВОЙ ОРИЕНТИР</p><h2>Путь к A1, затем A2</h2><p id="forecast-text">Пройди вводные уроки. Процент показывает занятия, а не официальный сертификат уровня.</p></div><div class="roadmap-stops"><span class="roadmap-stop current"><i>1</i><b>A1</b><small>базовые разговоры</small></span><span class="roadmap-line"></span><span class="roadmap-stop"><i>2</i><b>A2</b><small>больше свободы</small></span></div></section>
+          <section class="panel challenge-panel"><div class="challenge-icon">🏆</div><div class="challenge-copy"><p class="eyebrow">ЧЕЛЛЕНДЖ НЕДЕЛИ</p><h2>4 учебных дня — твой личный рекорд</h2><p>Соревнуйся с собой. Один учебный день тоже считается победой.</p><div class="challenge-dots" id="challenge-dots"></div></div><span class="challenge-count" id="challenge-count">0/4</span></section>
+          <section class="panel backup-panel"><div><p class="eyebrow">ТВОИ ДАННЫЕ</p><h2>Перенос прогресса</h2><p>Сохрани резервную копию и загрузи её на другом устройстве.</p></div><div class="backup-actions"><button class="button button-soft" id="export-data">Скачать копию</button><label class="button button-outline" for="import-file">Загрузить копию<input id="import-file" type="file" accept="application/json,.json" hidden /></label></div></section>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Главная навигация">
+        <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span><span>Главная</span></button>
+        <button class="nav-item" data-view="learn"><span class="nav-icon">▤</span><span>Уроки</span></button>
+        <button class="nav-item nav-center" data-view="practice"><span class="nav-center-icon">✦</span><span>Практика</span></button>
+        <button class="nav-item" data-view="progress"><span class="nav-icon">↗</span><span>Прогресс</span></button>
+      </nav>
+    </div>
+
+    <dialog class="profile-dialog" id="profile-dialog">
+      <form id="profile-form">
+        <button class="dialog-close" id="close-profile" type="button" aria-label="Закрыть">×</button>
+        <span class="dialog-sparkle">✿</span><p class="eyebrow">ТВОЙ ЛИЧНЫЙ ПРОФИЛЬ</p><h2>Настройки</h2>
+        <label class="field-label" for="name-input">Имя или короткое имя</label><input id="name-input" class="name-input" maxlength="24" placeholder="Например, Алина" autocomplete="given-name" />
+        <label class="field-label settings-label" for="session-length">Обычная длительность занятия</label>
+        <select id="session-length" class="name-input"><option value="20">20 минут</option><option value="30">30 минут</option><option value="60">60 минут</option></select>
+        <div class="settings-divider"></div>
+        <p class="eyebrow">ГОЛОСА В УРОКАХ</p>
+        <label class="field-label" for="voice-amelie">Амели · голос собеседницы</label>
+        <div class="profile-voice-row"><select id="voice-amelie" class="name-input"><option value="">Загружаю французские голоса…</option></select><button class="sound-button" id="preview-amelie" type="button" aria-label="Прослушать голос Амели">♫</button></div>
+        <label class="field-label settings-label" for="voice-thomas">Томас · голос собеседника</label>
+        <div class="profile-voice-row"><select id="voice-thomas" class="name-input"><option value="">Загружаю французские голоса…</option></select><button class="sound-button" id="preview-thomas" type="button" aria-label="Прослушать голос Томаса">♫</button></div>
+        <p class="dialog-note" id="voice-help">Упражнения будут озвучены выбранными голосами. Список зависит от голосов, установленных на устройстве.</p>
+        <div class="settings-divider"></div>
+        <div class="setting-heading"><div><p class="eyebrow">ФОНОВАЯ МУЗЫКА</p><b>Громкость</b></div><output id="music-volume-output">тихо</output></div>
+        <input id="music-volume" class="volume-range" type="range" min="0" max="0.14" step="0.005" value="0.075" aria-label="Громкость фоновой музыки" />
+        <p class="dialog-note">Звучит «Gymnopédie No. 1» Эрика Сати в исполнении Kevin MacLeod. Включается после первого касания страницы, во время французских реплик становится тише. Источник и лицензия: <a href="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3" target="_blank" rel="noreferrer">Incompetech</a> · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>.</p>
+        <div class="settings-divider"></div>
+        <p class="eyebrow">МИКРОФОН</p>
+        <div class="mic-check-row"><button class="button button-soft" id="check-mic" type="button">Проверить доступ</button><span id="mic-status" aria-live="polite">Проверка доступности микрофона…</span></div>
+        <p class="dialog-note" id="mic-help">Проверяю, разрешает ли этот адрес использовать микрофон.</p>
+        <p class="dialog-note">Прогресс сохраняется в этом браузере на этом устройстве. Перенести его можно через резервную копию.</p>
+        <div class="dialog-actions"><button class="button button-soft" id="cancel-profile" type="button">Закрыть</button><button class="button button-primary" id="save-name" type="submit">Сохранить</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="vocab-dialog" id="vocab-dialog">
+      <form id="vocab-form">
+        <button class="dialog-close" id="close-vocab" type="button" aria-label="Закрыть">×</button>
+        <span class="dialog-sparkle">✍</span><p class="eyebrow">ТВОЙ УНИВЕРСИТЕТСКИЙ СЛОВАРЬ</p><h2>Добавь слово с занятия</h2>
+        <label class="field-label" for="vocab-fr">Слово или фраза по-французски</label><input id="vocab-fr" class="name-input" maxlength="80" placeholder="Например, la bibliothèque" required />
+        <label class="field-label vocab-label" for="vocab-ru">Перевод на русский</label><input id="vocab-ru" class="name-input" maxlength="120" placeholder="Например, библиотека" required />
+        <p class="dialog-note">Новая карточка попадёт в общую колоду и сохранится в твоём браузере.</p>
+        <div class="dialog-actions"><button class="button button-soft" id="cancel-vocab" type="button">Отмена</button><button class="button button-primary" type="submit">Добавить</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="lesson-dialog" id="lesson-dialog"><div class="lesson-dialog-content" id="lesson-dialog-content"></div></dialog>
+    <audio id="background-music" preload="none" loop><source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3" type="audio/mpeg" /></audio>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
