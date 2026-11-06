@@ -169,7 +169,7 @@ const initialState = {
   sessionMinutes: 20,
   musicVolume: 0.075,
   musicVolumeVersion: 2,
-  musicAutoEnabled: true,
+  musicAutoEnabled: false,
   completedLessons: [],
   knownWords: [],
   customWords: [],
@@ -180,12 +180,31 @@ const initialState = {
   quizBest: 0
 };
 
+const frenchMusicTracks = [
+  { id: "0TFNGRYMz1U", title: "Je veux", artist: "ZAZ" },
+  { id: "oiKj0Z_Xnjc", title: "Papaoutai", artist: "Stromae" },
+  { id: "K5KAc5CoCuk", title: "Dernière Danse", artist: "Indila" },
+  { id: "bb-DKKRN4o8", title: "Les Champs-Élysées", artist: "Joe Dassin" },
+  { id: "8IjWHBGzsu4", title: "On ira", artist: "ZAZ" },
+  { id: "VHoT4N43jK8", title: "Alors on danse", artist: "Stromae" }
+];
+
+function shuffleMusicTracks(tracks) {
+  const shuffled = [...tracks];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
+  }
+  return shuffled;
+}
+
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if (!saved || typeof saved !== "object") return structuredClone(initialState);
     return {
       ...structuredClone(initialState), ...saved,
+      musicAutoEnabled: false,
       amelieVoiceURI: saved.amelieVoiceURI || "",
       thomasVoiceURI: saved.thomasVoiceURI || "",
       sessionMinutes: [20, 30, 60].includes(Number(saved.sessionMinutes)) ? Number(saved.sessionMinutes) : 20,
@@ -217,6 +236,13 @@ let currentTargetPhraseIndex = 0;
 let checkedTargetIndexes = new Set();
 let musicEnabled = false;
 let musicVolume = state.musicVolume;
+let musicDucked = false;
+let musicQueue = [frenchMusicTracks[0], ...shuffleMusicTracks(frenchMusicTracks.slice(1))];
+let currentMusicIndex = -1;
+let youtubeMusicPlayer = null;
+let youtubeMusicApiPromise = null;
+let youtubeMusicPlayerPromise = null;
+let musicPlayerErrors = 0;
 let mediaRecorder = null;
 let recordingStream = null;
 let dialogueReadyToConfirm = false;
@@ -398,6 +424,7 @@ function renderPracticeMedia(lessonId) {
 }
 
 function openPracticeVideo(videoId) {
+  stopBackgroundMusic();
   const frame = $("#practice-video-frame");
   frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
   frame.hidden = false;
@@ -464,6 +491,7 @@ function moveDictationTarget(direction) {
 }
 
 function openVideoPlayer(videoId, title) {
+  stopBackgroundMusic();
   const frame = $("#video-frame");
   frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
   frame.hidden = false;
@@ -648,9 +676,8 @@ function renderSpeakerSettings() {
 }
 
 function duckBackgroundMusic(ducked) {
-  const audio = $("#background-music");
-  if (!audio || !musicEnabled) return;
-  audio.volume = Math.min(0.35, musicVolume * 2.5) * (ducked ? 0.12 : 1);
+  musicDucked = ducked;
+  updateYouTubeMusicVolume();
 }
 
 function speakerVoice(role = "amelie") {
@@ -689,48 +716,155 @@ function speakFrench(text, onEnd, voiceOverride = null, speakerRole = "amelie", 
 function updateMusicButton() {
   const button = $("#music-toggle");
   button.setAttribute("aria-pressed", String(musicEnabled));
-  button.setAttribute("aria-label", musicEnabled ? "Выключить фоновую музыку" : "Включить фоновую музыку");
-  button.title = musicEnabled ? "Выключить тихую фоновую музыку" : "Включить тихую фоновую музыку";
+  button.setAttribute("aria-label", musicEnabled ? "Остановить французскую музыку" : "Включить французскую музыку");
+  button.title = musicEnabled ? "Остановить французскую музыку" : "Включить французскую музыку";
   $("#music-label").textContent = musicEnabled ? "Музыка: вкл." : "Музыка: выкл.";
 }
 
-async function startBackgroundMusic(showConfirmation = false) {
-  const audio = $("#background-music");
-  if (!audio) return;
+function effectiveMusicVolume() {
+  const volume = Math.min(0.35, musicVolume * 2.5);
+  return musicDucked ? volume * 0.12 : volume;
+}
+
+function updateYouTubeMusicVolume() {
+  if (!youtubeMusicPlayer || typeof youtubeMusicPlayer.setVolume !== "function") return;
+  youtubeMusicPlayer.setVolume(Math.round(effectiveMusicVolume() * 100));
+}
+
+function loadYouTubeIframeApi() {
+  if (window.YT?.Player) return Promise.resolve(window.YT);
+  if (youtubeMusicApiPromise) return youtubeMusicApiPromise;
+  youtubeMusicApiPromise = new Promise((resolve, reject) => {
+    const previousReadyHandler = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof previousReadyHandler === "function") previousReadyHandler();
+      resolve(window.YT);
+    };
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    script.async = true;
+    script.onerror = () => {
+      youtubeMusicApiPromise = null;
+      reject(new Error("YouTube player API could not be loaded"));
+    };
+    document.head.append(script);
+  });
+  return youtubeMusicApiPromise;
+}
+
+function currentMusicTrack() {
+  return musicQueue[currentMusicIndex] || frenchMusicTracks[0];
+}
+
+function showMusicTrack(track) {
+  $("#music-track-title").textContent = track.title;
+  $("#music-track-artist").textContent = track.artist;
+}
+
+function nextMusicTrack() {
+  const previousTrackId = currentMusicTrack()?.id;
+  currentMusicIndex += 1;
+  if (currentMusicIndex >= musicQueue.length) {
+    musicQueue = shuffleMusicTracks(frenchMusicTracks.filter(track => track.id !== previousTrackId));
+    currentMusicIndex = 0;
+  }
+  const track = currentMusicTrack();
+  showMusicTrack(track);
+  if (youtubeMusicPlayer && musicEnabled) {
+    youtubeMusicPlayer.setVolume(Math.round(effectiveMusicVolume() * 100));
+    youtubeMusicPlayer.loadVideoById(track.id);
+  }
+}
+
+function handleMusicPlayerError() {
+  musicPlayerErrors += 1;
+  if (musicPlayerErrors >= frenchMusicTracks.length) {
+    stopBackgroundMusic();
+    showToast("YouTube не разрешил встроенное воспроизведение этих клипов. Попробуй открыть подборку позже.");
+    return;
+  }
+  nextMusicTrack();
+}
+
+function createYouTubeMusicPlayer() {
+  if (youtubeMusicPlayerPromise) return youtubeMusicPlayerPromise;
+  youtubeMusicPlayerPromise = loadYouTubeIframeApi().then(YT => new Promise((resolve, reject) => {
+    const track = currentMusicTrack();
+    showMusicTrack(track);
+    let playerReady = false;
+    youtubeMusicPlayer = new YT.Player("music-player", {
+      width: "200",
+      height: "200",
+      videoId: track.id,
+      playerVars: {
+        autoplay: 1,
+        controls: 1,
+        playsinline: 1,
+        rel: 0,
+        origin: window.location.origin
+      },
+      events: {
+        onReady: event => {
+          playerReady = true;
+          event.target.setVolume(Math.round(effectiveMusicVolume() * 100));
+          if (musicEnabled) event.target.playVideo();
+          else event.target.pauseVideo();
+          resolve(event.target);
+        },
+        onStateChange: event => {
+          if (event.data === YT.PlayerState.PLAYING) {
+            musicEnabled = true;
+            musicPlayerErrors = 0;
+            updateYouTubeMusicVolume();
+            updateMusicButton();
+          } else if (event.data === YT.PlayerState.PAUSED) {
+            musicEnabled = false;
+            updateMusicButton();
+          } else if (event.data === YT.PlayerState.ENDED && musicEnabled) {
+            nextMusicTrack();
+          }
+        },
+        onError: () => {
+          if (!playerReady) reject(new Error("YouTube could not play the selected song"));
+          else handleMusicPlayerError();
+        }
+      }
+    });
+  }));
+  return youtubeMusicPlayerPromise;
+}
+
+async function startBackgroundMusic() {
+  const dock = $("#music-dock");
+  dock.hidden = false;
+  if (currentMusicIndex < 0) currentMusicIndex = 0;
+  showMusicTrack(currentMusicTrack());
+  musicEnabled = true;
+  updateMusicButton();
   try {
-    audio.volume = Math.min(0.35, musicVolume * 2.5);
-    await audio.play();
-    musicEnabled = true;
-    updateMusicButton();
-    if (showConfirmation) showToast("Играет «Gymnopédie No. 1» Эрика Сати 🎹");
+    const player = await createYouTubeMusicPlayer();
+    if (!musicEnabled) return;
+    player.setVolume(Math.round(effectiveMusicVolume() * 100));
+    player.playVideo();
   } catch {
     musicEnabled = false;
+    dock.hidden = true;
+    youtubeMusicPlayerPromise = null;
     updateMusicButton();
-    showToast("Не удалось загрузить мелодию. Проверь интернет и попробуй ещё раз.");
+    showToast("Не удалось запустить YouTube-плеер. Проверь подключение к интернету и попробуй ещё раз.");
   }
 }
 
 function stopBackgroundMusic() {
   musicEnabled = false;
-  const audio = $("#background-music");
-  if (audio) { audio.pause(); audio.currentTime = 0; }
+  if (youtubeMusicPlayer && typeof youtubeMusicPlayer.pauseVideo === "function") youtubeMusicPlayer.pauseVideo();
+  $("#music-dock").hidden = true;
   updateMusicButton();
 }
 
 function toggleBackgroundMusic() {
-  document.removeEventListener("pointerdown", startAmbientOnFirstInteraction, true);
-  document.removeEventListener("keydown", startAmbientOnFirstInteraction, true);
-  state.musicAutoEnabled = !musicEnabled;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   if (musicEnabled) stopBackgroundMusic();
-  else startBackgroundMusic(true);
-}
-
-function startAmbientOnFirstInteraction(event) {
-  if (event.target?.closest?.("#music-toggle")) return;
-  document.removeEventListener("pointerdown", startAmbientOnFirstInteraction, true);
-  document.removeEventListener("keydown", startAmbientOnFirstInteraction, true);
-  if (state.musicAutoEnabled) startBackgroundMusic();
+  else startBackgroundMusic();
 }
 
 function renderWord() {
@@ -1025,6 +1159,7 @@ async function importProgress(file) {
     if (!imported || typeof imported !== "object" || !Array.isArray(imported.completedLessons)) throw new Error("Неверный формат");
     state = {
       ...structuredClone(initialState), ...imported,
+      musicAutoEnabled: false,
       sessionMinutes: [20, 30, 60].includes(Number(imported.sessionMinutes)) ? Number(imported.sessionMinutes) : 20,
       musicVolume: Number.isFinite(Number(imported.musicVolume))
         ? Math.max(0, Math.min(0.14, Number(imported.musicVolume) * (Number(imported.musicVolumeVersion || 1) < 2 ? 1.75 : 1)))
@@ -1046,8 +1181,7 @@ async function importProgress(file) {
 function updateMusicVolumeDisplay() {
   const output = $("#music-volume-output");
   output.textContent = musicVolume === 0 ? "выкл." : musicVolume <= 0.045 ? "очень тихо" : musicVolume <= 0.09 ? "тихо" : "умеренно";
-  const audio = $("#background-music");
-  if (audio && musicEnabled) audio.volume = Math.min(0.35, musicVolume * 2.5);
+  updateYouTubeMusicVolume();
 }
 
 function openProfile() {
@@ -1085,6 +1219,8 @@ function bindEvents() {
   $("#close-video").addEventListener("click", () => closeVideoPlayer());
   $("#practice-video-launch").addEventListener("click", event => openPracticeVideo(event.currentTarget.dataset.videoId));
   $("#music-toggle").addEventListener("click", toggleBackgroundMusic);
+  $("#music-skip").addEventListener("click", nextMusicTrack);
+  $("#music-close").addEventListener("click", stopBackgroundMusic);
   $("#voice-amelie").addEventListener("change", event => {
     state.amelieVoiceURI = event.target.value;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1216,8 +1352,6 @@ function init() {
     window.speechSynthesis.getVoices();
     window.speechSynthesis.addEventListener("voiceschanged", renderSpeakerSettings);
   }
-  document.addEventListener("pointerdown", startAmbientOnFirstInteraction, true);
-  document.addEventListener("keydown", startAmbientOnFirstInteraction, true);
   updateMicrophoneStatus();
   updateMusicVolumeDisplay();
 }

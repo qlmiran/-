@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261106-2" />
-    <script src="app.js?v=20261106-2" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261106-3" />
+    <script src="app.js?v=20261106-3" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -234,7 +234,7 @@
         <div class="settings-divider"></div>
         <div class="setting-heading"><div><p class="eyebrow">ФОНОВАЯ МУЗЫКА</p><b>Громкость</b></div><output id="music-volume-output">тихо</output></div>
         <input id="music-volume" class="volume-range" type="range" min="0" max="0.14" step="0.005" value="0.075" aria-label="Громкость фоновой музыки" />
-        <p class="dialog-note">Звучит «Gymnopédie No. 1» Эрика Сати в исполнении Kevin MacLeod. Включается после первого касания страницы, во время французских реплик становится тише. Источник и лицензия: <a href="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3" target="_blank" rel="noreferrer">Incompetech</a> · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>.</p>
+        <p class="dialog-note">Нажми ноту вверху, чтобы включить подборку известных франкоязычных песен. Клип играет во встроенном видимом YouTube-плеере, а после окончания включается следующая песня. Закрытие плеера останавливает музыку; во время озвучки урока она становится тише.</p>
         <div class="settings-divider"></div>
         <p class="eyebrow">МИКРОФОН</p>
         <div class="mic-check-row"><button class="button button-soft" id="check-mic" type="button">Проверить доступ</button><span id="mic-status" aria-live="polite">Проверка доступности микрофона…</span></div>
@@ -256,7 +256,13 @@
     </dialog>
 
     <dialog class="lesson-dialog" id="lesson-dialog"><div class="lesson-dialog-content" id="lesson-dialog-content"></div></dialog>
-    <audio id="background-music" preload="none" loop><source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3" type="audio/mpeg" /></audio>
+    <aside class="music-dock" id="music-dock" aria-label="Французская музыкальная подборка" hidden>
+      <div class="music-dock-heading">
+        <div class="music-track-copy" aria-live="polite"><span class="eyebrow">À LA FRANÇAISE · ПОДБОРКА</span><b id="music-track-title">Выбери песню</b><small id="music-track-artist">ZAZ · Stromae · Indila · Joe Dassin</small></div>
+        <div class="music-dock-actions"><button class="music-dock-action" id="music-skip" type="button" aria-label="Следующая песня" title="Следующая песня">⏭</button><button class="music-dock-action" id="music-close" type="button" aria-label="Остановить музыку" title="Остановить музыку">×</button></div>
+      </div>
+      <div class="music-player-frame"><div id="music-player"></div></div>
+    </aside>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
 </html>
