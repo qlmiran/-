@@ -9,8 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20261106-3" />
-    <script src="app.js?v=20261106-3" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261106-4" />
+    <link rel="stylesheet" href="assistant.css?v=20261107-1" />
+    <script src="app.js?v=20261106-4" defer></script>
+    <script src="assistant.js?v=20261107-1" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -135,6 +137,50 @@
           </section>
         </section>
 
+        <section class="view assistant-view" id="view-assistant" aria-labelledby="assistant-title">
+          <div class="page-intro"><p class="eyebrow">ТВОЙ СОБЕСЕДНИК · RU · KZ · FR</p><h1 id="assistant-title">ИИ-помощник <span class="title-sparkle">✦</span></h1><p>Общайся на русском, казахском или французском, задавай вопросы о чём угодно и проси помочь с учёбой, путешествиями, кино или идеями.</p></div>
+          <div class="assistant-layout">
+            <section class="assistant-chat panel" aria-label="Чат с ИИ-помощником">
+              <div class="assistant-chat-heading"><div class="assistant-avatar" aria-hidden="true">✦</div><div><b>Bonjour, я рядом</b><small>Отвечаю на языке твоего сообщения</small></div><button id="assistant-clear" class="assistant-clear" type="button">Новый разговор</button></div>
+              <div id="assistant-messages" class="assistant-messages" aria-live="polite" aria-relevant="additions text">
+                <article class="assistant-message assistant-message-bot"><span class="assistant-message-name">Bonjour</span><p>Привет! Можем поболтать, разобрать французскую фразу или обсудить любую твою идею. Напиши по-русски, қазақша или français — как тебе удобнее ✨</p></article>
+              </div>
+              <div class="assistant-quick-prompts" aria-label="Идеи для начала разговора">
+                <button type="button" data-assistant-prompt="Давай познакомимся. Задавай мне простые вопросы по-французски и объясняй их по-русски.">Познакомиться 🇫🇷</button>
+                <button type="button" data-assistant-prompt="Расскажи что-нибудь интересное о французском кино и посоветуй фильм уровня A1–A2.">Кино 🎬</button>
+                <button type="button" data-assistant-prompt="Қазақша сөйлесейік. Маған француз тілін қызықты әрі жеңіл үйренуге көмектес.">Қазақша сөйлесу</button>
+              </div>
+              <form id="assistant-form" class="assistant-form">
+                <label class="visually-hidden" for="assistant-input">Сообщение помощнику</label>
+                <textarea id="assistant-input" maxlength="2000" rows="2" placeholder="Напиши вопрос или расскажи, что у тебя на уме…" required></textarea>
+                <div class="assistant-composer-tools">
+                  <label class="assistant-language-label" for="assistant-language">Язык микрофона
+                    <select id="assistant-language" aria-label="Язык голосового ввода"><option value="ru-RU">Русский</option><option value="kk-KZ">Қазақша</option><option value="fr-FR">Français</option></select>
+                  </label>
+                  <button class="assistant-icon-button" id="assistant-mic" type="button" aria-label="Продиктовать сообщение" title="Продиктовать сообщение">🎙</button>
+                  <label class="assistant-language-label assistant-output-label" for="assistant-output-language">Голос ответа
+                    <select id="assistant-output-language" aria-label="Язык озвучивания ответа"><option value="auto">Авто</option><option value="ru-RU">Русский</option><option value="kk-KZ">Қазақша</option><option value="fr-FR">Français</option></select>
+                  </label>
+                  <label class="assistant-voice-toggle"><input id="assistant-speak" type="checkbox" /> Озвучивать ответы</label>
+                  <button class="button button-primary assistant-send" id="assistant-send" type="submit">Отправить <span aria-hidden="true">↗</span></button>
+                </div>
+              </form>
+              <p class="assistant-status" id="assistant-status" role="status" aria-live="polite">Чтобы начать, настрой подключение ниже и подтверди уведомление о данных.</p>
+            </section>
+            <aside class="assistant-setup panel">
+              <p class="eyebrow">ПОДКЛЮЧЕНИЕ</p><h2>Почти готово</h2>
+              <p class="assistant-setup-copy">Для защиты ключа помощник работает через небольшой сервер. Здесь вводятся только адрес сервера и его код доступа — ключ модели в сайт не вставляется.</p>
+              <label class="field-label" for="assistant-endpoint">Адрес API помощника</label><input id="assistant-endpoint" class="name-input" type="url" inputmode="url" placeholder="https://твой-проект.vercel.app/api/assistant" autocomplete="url" />
+              <label class="field-label assistant-field-gap" for="assistant-access-code">Код доступа</label><input id="assistant-access-code" class="name-input" type="password" maxlength="128" autocomplete="off" placeholder="Код из настроек сервера" />
+              <button class="button button-soft assistant-save-endpoint" id="assistant-save-endpoint" type="button">Сохранить адрес</button>
+              <div class="assistant-privacy-box"><b>Перед первым сообщением</b><p>Текст вопроса отправится через сервер в OpenRouter и модель, чтобы получить ответ. Переписка не сохраняется сайтом и исчезнет при перезагрузке. Не отправляй пароли, адрес, документы или другие личные сведения.</p>
+                <label><input id="assistant-consent" type="checkbox" /> Понимаю и хочу начать разговор</label>
+              </div>
+              <p class="assistant-setup-footnote">Голосовой ввод использует распознавание речи браузера. Если микрофон не поддерживается, нажми микрофон на клавиатуре телефона. Озвучивание работает голосами, установленными в устройстве.</p>
+            </aside>
+          </div>
+        </section>
+
         <section class="view" id="view-practice" aria-labelledby="practice-title">
           <div class="page-intro"><p class="eyebrow">СЛУШАЙ · ПОВТОРЯЙ · ГОВОРИ</p><h1 id="practice-title">Практика <span class="title-sparkle">✦</span></h1><p>Ошибки здесь — часть пути. Попробуй ещё раз, и фраза станет твоей.</p></div>
           <div class="practice-step-head">
@@ -214,6 +260,7 @@
         <button class="nav-item" data-view="learn"><span class="nav-icon">▤</span><span>Уроки</span></button>
         <button class="nav-item nav-center" data-view="practice"><span class="nav-center-icon">✦</span><span>Практика</span></button>
         <button class="nav-item" data-view="progress"><span class="nav-icon">↗</span><span>Прогресс</span></button>
+        <button class="nav-item assistant-nav" data-view="assistant"><span class="nav-icon">✧</span><span>Помощник</span></button>
       </nav>
     </div>
 
